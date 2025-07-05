@@ -26,23 +26,19 @@ sudo dpkg -i check-mk-raw-2.4.0p6_0.noble_amd64.deb
 
 3. Create a Monitoring Site
 bash
-Αντιγραφή
-Επεξεργασία
+
 sudo omd create homelab
 📌 Important: The admin password for cmkadmin is shown immediately after running this command. Copy it!
 
 Example output:
 
 pgsql
-Αντιγραφή
-Επεξεργασία
+
 The admin user for the web applications is cmkadmin with password: bS41X2IB2E7B
 What I Learned About the Password:
 Initially, I missed this password and tried to find it under:
 
 bash
-Αντιγραφή
-Επεξεργασία
 sudo omd su homelab
 cat ~/tmp/password.secret
 But this file didn’t exist. The only reliable way to get the password was directly from the omd create command output.
@@ -55,46 +51,39 @@ Apache failed to start with:
 Or errors like:
 
 nginx
-Αντιγραφή
-Επεξεργασία
+
 Syntax error on line 1 of /etc/apache2/conf-enabled/zzz_omd.conf
 The original line in zzz_omd.conf:
 
 apache
-Αντιγραφή
-Επεξεργασία
+
 Include /omd/apache/*.conf
 This caused:
 
 sql
-Αντιγραφή
-Επεξεργασία
+
 No matches for the wildcard '*.conf' in '/omd/apache/', failing
 ✅ My Fix
 Edit the config file:
 
 bash
-Αντιγραφή
-Επεξεργασία
+
 sudo nano /etc/apache2/conf-enabled/zzz_omd.conf
 Change this line:
 
 apache
-Αντιγραφή
-Επεξεργασία
+
 Include /omd/apache/*.conf
 To this:
 
 apache
-Αντιγραφή
-Επεξεργασία
+
 IncludeOptional /opt/omd/sites/homelab/tmp/apache/*.conf
 Save and exit (Ctrl+O, Enter, Ctrl+X).
 
 Test the Apache config:
 bash
-Αντιγραφή
-Επεξεργασία
+
 sudo apache2ctl configtest
 ✅ Output should include: Syntax OK
 
@@ -104,27 +93,23 @@ sudo apache2ctl configtest
 Restart Apache:
 
 bash
-Αντιγραφή
-Επεξεργασία
+
 sudo systemctl restart apache2.service
 Check its status:
 
 bash
-Αντιγραφή
-Επεξεργασία
+
 systemctl status apache2.service
 Start your Checkmk site:
 
 bash
-Αντιγραφή
-Επεξεργασία
+
 omd start homelab
 6. Access the Web Interface
 Open your browser and go to:
 
 arduino
-Αντιγραφή
-Επεξεργασία
+
 http://10.0.1.207/homelab/
 Login credentials:
 
